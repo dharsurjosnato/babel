@@ -23,6 +23,7 @@ make
 ## Run
 
 ./babel --lang en examples/hello_en.babel
+
 ./babel --lang es examples/hello_es.babel
 
 ## Tests
