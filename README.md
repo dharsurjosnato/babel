@@ -7,6 +7,7 @@ The goal is to let people write code using keywords from their own languages, wh
 ## Current Features
 
 1.0: 
+
 English and Spanish keywords
 
 Variables and assignments
@@ -18,6 +19,7 @@ Printing values
 A simple interpreter
 
 1.1:
+
 if/else statements
 
 while loops
