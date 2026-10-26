@@ -4,8 +4,9 @@ A multilingual programming language written in C.
 
 The goal is to let people write code using keywords from their own languages, while Babel translates those keywords into a shared internal representation.
 
-Current Features
+## Current Features
 
+1.0: 
 English and Spanish keywords
 
 Variables and assignments
@@ -15,6 +16,17 @@ Basic arithmetic
 Printing values
 
 A simple interpreter
+
+1.1:
+if/else statements
+
+while loops
+
+for loops
+
+comparison operators
+
+booleans
 
 ## Build
 
