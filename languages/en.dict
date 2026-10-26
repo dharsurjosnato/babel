@@ -1,3 +1,9 @@
 # canonical=localized spelling
 let=let
 print=print
+if=if
+else=else
+while=while
+for=for
+true=true
+false=false

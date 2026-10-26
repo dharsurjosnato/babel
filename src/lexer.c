@@ -52,11 +52,29 @@ int lex_source(const char *s, const Dictionary *dict, TokenArray *out) {
             const char *canonical = t.text ? dictionary_canonical(dict, t.text) : NULL;
             if (canonical && strcmp(canonical, "let") == 0) t.type = TOK_LET;
             else if (canonical && strcmp(canonical, "print") == 0) t.type = TOK_PRINT;
+            else if (canonical && strcmp(canonical, "if") == 0) t.type = TOK_IF;
+            else if (canonical && strcmp(canonical, "else") == 0) t.type = TOK_ELSE;
+            else if (canonical && strcmp(canonical, "while") == 0) t.type = TOK_WHILE;
+            else if (canonical && strcmp(canonical, "for") == 0) t.type = TOK_FOR;
+            else if (canonical && strcmp(canonical, "true") == 0) t.type = TOK_TRUE;
+            else if (canonical && strcmp(canonical, "false") == 0) t.type = TOK_FALSE;
             else t.type = TOK_IDENT;
         } else {
             i++; col++;
+            if (s[i] == '=' && (c == '=' || c == '!' || c == '<' || c == '>')) {
+                t.type = c == '=' ? TOK_EQ : c == '!' ? TOK_NE : c == '<' ? TOK_LE : TOK_GE;
+                i++; col++;
+                t.text = copy_range(s + i - 2, 2);
+                if (!t.text || !push(out, t)) { free(t.text); return 0; }
+                continue;
+            }
             switch (c) {
                 case '=': t.type = TOK_ASSIGN; break;
+                case '<': t.type = TOK_LT; break;
+                case '>': t.type = TOK_GT; break;
+                case '!': t.type = TOK_BANG; break;
+                case '{': t.type = TOK_LBRACE; break;
+                case '}': t.type = TOK_RBRACE; break;
                 case '+': t.type = TOK_PLUS; break;
                 case '-': t.type = TOK_MINUS; break;
                 case '*': t.type = TOK_STAR; break;

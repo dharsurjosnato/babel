@@ -39,10 +39,16 @@ static int eval(const Expr *e, Environment *env, double *out) {
     double a, b;
     if (e->type == AST_UNARY) {
         if (!eval(e->right, env, &b)) return 0;
-        *out = -b; return 1;
+        *out = e->op == TOK_BANG ? (b == 0.0) : -b; return 1;
     }
     if (!eval(e->left, env, &a) || !eval(e->right, env, &b)) return 0;
     switch (e->op) {
+        case TOK_EQ: *out = a == b; break;
+        case TOK_NE: *out = a != b; break;
+        case TOK_LT: *out = a < b; break;
+        case TOK_LE: *out = a <= b; break;
+        case TOK_GT: *out = a > b; break;
+        case TOK_GE: *out = a >= b; break;
         case TOK_PLUS: *out = a + b; break;
         case TOK_MINUS: *out = a - b; break;
         case TOK_STAR: *out = a * b; break;
@@ -56,18 +62,54 @@ static int eval(const Expr *e, Environment *env, double *out) {
     }
     return 1;
 }
-int interpret_program(const Stmt *program) {
-    Environment env = {0}; int ok = 1;
-    for (const Stmt *s = program; s && ok; s = s->next) {
-        double value;
-        if (!eval(s->expr, &env, &value)) { ok = 0; break; }
-        if (s->type == STMT_PRINT) {
-            if (fabs(value - round(value)) < 1e-10) printf("%.0f\n", value);
-            else printf("%.10g\n", value);
-        } else {
-            ok = set_var(&env, s->name, value, s->type == STMT_LET);
-        }
+/* The initial version uses one shared environment, including for nested blocks.
+ * This preserves existing variable behavior; lexical scopes are a later feature. */
+static int run(const Stmt *program, Environment *env);
+static int run_one(const Stmt *s, Environment *env) {
+    double value = 0;
+    switch (s->type) {
+        case STMT_BLOCK:
+            return run(s->body, env);
+        case STMT_IF:
+            if (!eval(s->expr, env, &value)) return 0;
+            return value != 0 ? run(s->body, env) : run(s->else_body, env);
+        case STMT_WHILE:
+            for (;;) {
+                if (!eval(s->expr, env, &value)) return 0;
+                if (value == 0) return 1;
+                if (!run(s->body, env)) return 0;
+            }
+        case STMT_FOR:
+            if (s->init && !run_one(s->init, env)) return 0;
+            for (;;) {
+                if (s->expr) {
+                    if (!eval(s->expr, env, &value)) return 0;
+                    if (value == 0) return 1;
+                }
+                if (!run(s->body, env)) return 0;
+                if (s->update && !run_one(s->update, env)) return 0;
+            }
+        case STMT_LET:
+        case STMT_ASSIGN:
+        case STMT_PRINT:
+            if (!eval(s->expr, env, &value)) return 0;
+            if (s->type == STMT_PRINT) {
+                if (fabs(value - round(value)) < 1e-10) printf("%.0f\n", value);
+                else printf("%.10g\n", value);
+                return 1;
+            }
+            return set_var(env, s->name, value, s->type == STMT_LET);
     }
+    return 0;
+}
+static int run(const Stmt *program, Environment *env) {
+    for (const Stmt *s = program; s; s = s->next)
+        if (!run_one(s, env)) return 0;
+    return 1;
+}
+int interpret_program(const Stmt *program) {
+    Environment env = {0};
+    int ok = run(program, &env);
     for (size_t i = 0; i < env.count; i++) free(env.items[i].name);
     free(env.items);
     return ok;

@@ -1,3 +1,9 @@
 # canonical=localized spelling
 let=sea
 print=imprimir
+if=si
+else=sino
+while=mientras
+for=para
+true=verdadero
+false=falso

@@ -18,4 +18,5 @@ clean:
 	rm -f $(OBJ) $(TARGET)
 
 test: $(TARGET)
-	./tests/smoke.sh
+	sh ./tests/smoke.sh
+	sh ./tests/control.sh

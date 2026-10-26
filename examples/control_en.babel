@@ -1,0 +1,6 @@
+# Conditionals and loops in English
+let x = 3;
+if (x > 2) { print 10; } else { print 0; }
+while (x > 0) { print x; x = x - 1; }
+for (let i = 0; i < 3; i = i + 1) { print i; }
+if (true == 1) { if (!false) { print 99; } }
