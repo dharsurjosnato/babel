@@ -1,6 +1,19 @@
 # Condicionales y bucles en espanol (ASCII)
 sea x = 3;
-si (x > 2) { imprimir 10; } sino { imprimir 0; }
-mientras (x > 0) { imprimir x; x = x - 1; }
-para (sea i = 0; i < 3; i = i + 1) { imprimir i; }
-si (verdadero == 1) { si (!falso) { imprimir 99; } }
+si (x > 2) {
+    imprimir 10;
+} sino {
+    imprimir 0;
+}
+mientras (x > 0) {
+    imprimir x;
+    x = x - 1;
+}
+para (sea i = 0; i < 3; i = i + 1) {
+    imprimir i;
+}
+si (verdadero == 1) {
+    si (!falso) {
+        imprimir 99;
+    }
+}
