@@ -40,6 +40,10 @@ make
 
 ./babel --lang es examples/hello_es.babel
 
+./babel --lang en examples/control_en.babel
+
+./babel --lang es examples/control_es.babel
+
 ## Tests
 
 make test
