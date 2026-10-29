@@ -1,2 +1,2 @@
-sea respuesta = 6 * 7;
+sea respuesta = 6 * 1580;
 imprimir respuesta;
